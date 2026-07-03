@@ -1,0 +1,8 @@
+{
+  "name": "Learn Jujutsu",
+  "description": "An interactive, gamified simulator to learn Jujutsu (jj), a modern and Git-compatible version control system, highlighting its unique advantages over Git.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
