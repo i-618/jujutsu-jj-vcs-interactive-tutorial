@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { levels } from "./levels";
-import { RepoState, TerminalLine, VirtualCommit } from "./types";
+import { RepoState, TerminalLine } from "./types";
 import { GraphView } from "./components/GraphView";
 import { Terminal } from "./components/Terminal";
 import { LevelSelector } from "./components/LevelSelector";
@@ -21,19 +21,15 @@ import {
 import {
   BookOpen,
   CheckCircle,
-  AlertCircle,
-  Play,
   Award,
   BookMarked,
   Info,
   ChevronRight,
+  ChevronDown,
   FileCode,
-  Undo2,
-  GitBranch,
   RefreshCw,
   Plus,
   Trash2,
-  Maximize2
 } from "lucide-react";
 
 export default function App() {
@@ -62,6 +58,7 @@ export default function App() {
   const [fileContent, setFileContent] = useState("");
   const [newFileName, setNewFileName] = useState("");
   const [showAddFileDialog, setShowAddFileDialog] = useState(false);
+  const [isWorkingCopyEditorCollapsed, setIsWorkingCopyEditorCollapsed] = useState(true);
 
   // Initialize level
   useEffect(() => {
@@ -702,11 +699,14 @@ ${wc.isConflicted ? `\n⚠️  WARNING: Commit contains first-class conflicts! R
         <div className="lg:col-span-7 flex flex-col gap-4 lg:h-full lg:min-h-0">
           
           {/* Commit Graph */}
-          <GraphView repoState={repoState} />
+          <GraphView
+            repoState={repoState}
+            className={isWorkingCopyEditorCollapsed ? "h-[430px]" : "h-[250px]"}
+          />
 
           {/* Virtual File system editor (Unique Auto-commit Demonstrator) */}
-          <div className="bg-white border border-slate-200/80 rounded-xl overflow-hidden shadow-sm flex flex-col h-[230px] shrink-0">
-            <div className="px-5 py-3 bg-slate-50 border-b border-slate-100 flex items-center justify-between shrink-0">
+          <div className={`bg-white border border-slate-200/80 rounded-xl overflow-hidden shadow-sm flex flex-col shrink-0 transition-[height] duration-200 ${isWorkingCopyEditorCollapsed ? "h-14" : "h-[230px]"}`}>
+            <div className={`px-5 py-3 bg-slate-50 flex items-center justify-between shrink-0 ${isWorkingCopyEditorCollapsed ? "" : "border-b border-slate-100"}`}>
               <div className="flex items-center gap-2">
                 <FileCode className="text-indigo-600" size={15} />
                 <div>
@@ -715,15 +715,32 @@ ${wc.isConflicted ? `\n⚠️  WARNING: Commit contains first-class conflicts! R
                 </div>
               </div>
 
-              <button
-                onClick={() => setShowAddFileDialog(true)}
-                className="flex items-center gap-1 text-[11px] bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1.5 rounded font-semibold tracking-wide transition font-sans cursor-pointer shadow-sm shadow-indigo-100"
-              >
-                <Plus size={12} />
-                <span>New File</span>
-              </button>
+              <div className="flex items-center gap-2">
+                {!isWorkingCopyEditorCollapsed && (
+                  <button
+                    onClick={() => setShowAddFileDialog(true)}
+                    className="flex items-center gap-1 text-[11px] bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1.5 rounded font-semibold tracking-wide transition font-sans cursor-pointer shadow-sm shadow-indigo-100"
+                  >
+                    <Plus size={12} />
+                    <span>New File</span>
+                  </button>
+                )}
+                <button
+                  type="button"
+                  aria-expanded={!isWorkingCopyEditorCollapsed}
+                  onClick={() => setIsWorkingCopyEditorCollapsed(prev => !prev)}
+                  className="flex items-center gap-1 text-[11px] border border-slate-200 hover:border-slate-300 hover:bg-white text-slate-600 px-2.5 py-1.5 rounded font-semibold tracking-wide transition font-sans cursor-pointer"
+                >
+                  <ChevronDown
+                    size={13}
+                    className={`transition-transform ${isWorkingCopyEditorCollapsed ? "-rotate-90" : "rotate-0"}`}
+                  />
+                  <span>{isWorkingCopyEditorCollapsed ? "Show" : "Hide"}</span>
+                </button>
+              </div>
             </div>
 
+            {!isWorkingCopyEditorCollapsed && (
             <div className="p-4 flex flex-col md:flex-row gap-4 flex-1 min-h-0">
               {/* Left pane: File list */}
               <div className="w-full md:w-1/3 border-b md:border-b-0 md:border-r border-slate-100 pb-3 md:pb-0 pr-0 md:pr-3 flex flex-col gap-1.5 overflow-y-auto custom-scrollbar">
@@ -780,6 +797,7 @@ ${wc.isConflicted ? `\n⚠️  WARNING: Commit contains first-class conflicts! R
                 )}
               </div>
             </div>
+            )}
           </div>
 
           {/* New File Creation Dialog Overlay */}

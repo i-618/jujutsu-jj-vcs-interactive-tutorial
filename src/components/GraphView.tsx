@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import { motion } from "motion/react";
 import { RepoState, VirtualCommit } from "../types";
-import { HelpCircle, GitCommit, AlertTriangle, Bookmark as BookmarkIcon } from "lucide-react";
 
 interface GraphViewProps {
   repoState: RepoState;
   onSelectCommit?: (commitId: string) => void;
+  className?: string;
 }
 
 interface NodeLayout {
@@ -16,7 +16,7 @@ interface NodeLayout {
   label: string;
 }
 
-export const GraphView: React.FC<GraphViewProps> = ({ repoState, onSelectCommit }) => {
+export const GraphView: React.FC<GraphViewProps> = ({ repoState, onSelectCommit, className }) => {
   const { commits, bookmarks, workingCopyId } = repoState;
 
   // Compute a simple, elegant visual layout for commits
@@ -176,7 +176,7 @@ export const GraphView: React.FC<GraphViewProps> = ({ repoState, onSelectCommit 
   }, [layout]);
 
   return (
-    <div className="relative w-full h-[250px] bg-[#fdfdfd] border border-slate-200/80 rounded-xl overflow-y-auto overflow-x-hidden shadow-sm p-4 custom-scrollbar">
+    <div className={`relative w-full ${className ?? "h-[250px]"} bg-[#fdfdfd] border border-slate-200/80 rounded-xl overflow-y-auto overflow-x-hidden shadow-sm p-4 custom-scrollbar transition-[height] duration-200`}>
       {/* Background radial dot grid layout */}
       <div className="absolute inset-0 pointer-events-none" style={{ backgroundImage: "radial-gradient(#e5e7eb 1.5px, transparent 1.5px)", backgroundSize: "28px 28px", opacity: 0.8 }} />
 
