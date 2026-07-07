@@ -139,7 +139,7 @@ export default defineConfig({
 
 Without this, built files may reference `/assets/...`, which usually points at the domain root instead of the repository subpath.
 
-After building, publish the generated `dist/` directory with your preferred GitHub Pages workflow.
+After building, publish the generated `docs/` directory with your preferred GitHub Pages workflow.
 
 ## Project layout
 
